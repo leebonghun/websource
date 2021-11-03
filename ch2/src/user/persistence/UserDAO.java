@@ -34,6 +34,7 @@ public class UserDAO {
 		return null;
 	}	
 
+	
 	// 로그인(select)
 	public UserDTO isLogin(String userid, String password) {
 //		boolean loginFlag = false;
@@ -49,7 +50,7 @@ public class UserDAO {
 			pstmt.setString(2, password);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				dto = new UserDTO();
+				dto = new UserDTO();				
 				dto.setUserid(rs.getString("userid"));
 				dto.setName(rs.getString("name"));
 

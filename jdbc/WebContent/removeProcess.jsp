@@ -6,22 +6,23 @@
     pageEncoding="UTF-8"%>
 <%
 	
-	MemberDTO dto = new MemberDTO();
-	dto.setUserid(request.getParameter("userid"));
+	String userid = request.getParameter("userid");
+	String password = request.getParameter("password");
 	
 
 	Connection con=jdbcUtil.getConnection();
 	//생성된 con을 이용해 DAO 객체 생성
 	MemberDAO dao = new MemberDAO(con);
-	
-	boolean deleteFlag = dao.delete(dto);
+	boolean deleteFlag = dao.delete(userid,password);
 	
 	if(deleteFlag){
 		jdbcUtil.commit(con);
-		response.sendRedirect("all.jsp");
+		jdbcUtil.close(con);
+		response.sendRedirect("allProcess.jsp");
 	}else{
 		jdbcUtil.rollback(con);
-		response.sendRedirect("getMember.jsp");
+		jdbcUtil.close(con);
+		response.sendRedirect("selectProcess.jsp");
 	}
 	
 	

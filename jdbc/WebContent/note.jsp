@@ -53,6 +53,12 @@
 	request.setAttribute() + 페이지 이동(forward())
 	=>다음페이지에서 request 값 상요
 	
+	CRUD(Create Read Update Delete)
+	
+	프로젝트 생성
+	cmd(lombok)
+	emmet
+	build path => lombok,ojdbc
 	
 	
  	-->

@@ -29,7 +29,7 @@
 	//db작업 결과에 따라 페이지 이동
 	if(insertFlag){
 		jdbcUtil.commit(con);
-		response.sendRedirect("all.jsp");
+		response.sendRedirect("allProcess.jsp");
 	}else{
 		jdbcUtil.rollback(con);
 		response.sendRedirect("insert.jsp");

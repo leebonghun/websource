@@ -45,6 +45,14 @@ $(function() {
 		if(divPwd.css("display") == "none"){
 			divPwd.css("display","block");
 		}else{
+			//비밀번호를 입력하지 않으면 경고창을 띄우기
+			//비밀번호 포커스
+			let input = divPwd.children("input");
+			if(input.val()==""){
+				alert("비밀번호를 입력하세요");
+				input.focus();
+				return;
+			}
 			//폼 전송
 			$("form").attr("action","removeProcess.jsp");
 			$("form").submit();
