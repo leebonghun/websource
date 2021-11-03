@@ -4,18 +4,18 @@
 
 
 <div style="margin-top: 20px">
-	<form action="" method="post">
+	<form action="updateProcess.jsp" method="post">
 		<div class="form-group">
 			<label for="userid">UserID</label> <input type="text"
-				class="form-control" id="userid" placeholder="현재 아이디">
+				class="form-control" id="userid" placeholder="현재 아이디" name="userid">
 		</div>
 		<div class="form-group">
-			<label for="password">Password</label> <input type="password"
-				class="form-control" id="password" placeholder="현재 비밀번호">
+			<label for="currentPassword">Password</label> <input type="password"
+				class="form-control" id="currentPassword" placeholder="현재 비밀번호" name ="currentPassword">
 		</div>
 		<div class="form-group">
-			<label for="password">Change Password</label> <input type="password"
-				class="form-control" id="password" placeholder="변경할 비밀번호">
+			<label for="changePassword">Change Password</label> <input type="password"
+				class="form-control" id="changePassword" placeholder="변경할 비밀번호" name="changePassword">
 		</div>
 		<button type="submit" class="btn btn-primary">Submit</button>
 	</form>

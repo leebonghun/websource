@@ -47,6 +47,12 @@
 	- 어렵다
 	- 중복된 코드 축소
 	
+	session => 웹 사이트에서 존재하는 모든 페이지에서 값을 공유
+	request => 특정 페이지 하나만 값을 공유
+	
+	request.setAttribute() + 페이지 이동(forward())
+	=>다음페이지에서 request 값 상요
+	
 	
 	
  	-->
