@@ -10,6 +10,8 @@ import org.apache.tomcat.dbcp.dbcp2.PStmtKey;
 
 import lombok.AllArgsConstructor;
 import user.domain.MemberDTO;
+import user.domain.UpdateDTO;
+
 //클래스 안의 메소드가 static으로만 구성되어 있다면 import를 static으로 하는 것이 가능함
 import static user.persistance.jdbcUtil.*;
 
@@ -69,16 +71,17 @@ public class MemberDAO {
 		}
 		return list;
 	}
-	public boolean update(MemberDTO dto) {
+	//비밀번호 수정
+	public boolean update(UpdateDTO updateDto) {
 		boolean updateFlag =false;
 		PreparedStatement pstmt=null;
 		
 		try {
 			String sql = "update MEMBER set password=? where userid=? and password=?";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, dto.getChagnePassword());
-			pstmt.setString(2, dto.getUserid());
-			pstmt.setString(3, dto.getPassword());
+			pstmt.setString(1, updateDto.getNewPassword());
+			pstmt.setString(2, updateDto.getUserid());
+			pstmt.setString(3, updateDto.getCurrentPassword());
 			int result = pstmt.executeUpdate();
 			
 			if(result>0) {

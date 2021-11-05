@@ -8,11 +8,13 @@ email varchar(50) not null
 );
 
 insert into member values('hong123','hong123@','홍길동','남','hong123@gmail.com')
+insert into member values('hong1234','hong123@','홍길동','남','hong123@gmail.com')
+insert into member values('hong1235','hong123@','홍길동','남','hong123@gmail.com')
 
-select * from member where userid = 'hong123' and password = 'hong123@'
+select * from member where userid = 'hong123' and password = 'hong1235'
 
+delete from member where userid = hong1234 ;
 
-
-select * from member
+select * from member;
 
 alter table member modify(gender nvarchar2(20));
