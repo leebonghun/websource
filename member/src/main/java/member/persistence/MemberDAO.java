@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import member.domain.MemberDTO;
+import member.domain.UpdateDTO;
+
 import static member.persistence.jdbcUtil.*;
 public class MemberDAO {
 	private Connection con;
@@ -69,16 +71,16 @@ public class MemberDAO {
 		return deleteFlag;
 	}
 	
-	public boolean update(MemberDTO dto) {
+	public boolean update(UpdateDTO dto) {
 		boolean updateFlag = false;
 		PreparedStatement pstmt = null;
 		String sql = "update MEMBER set password=? where userid=? and password=?";
 		
 		try {
 			pstmt=con.prepareStatement(sql);
-			pstmt.setString(1, dto.getChagnePassword());
+			pstmt.setString(1, dto.getNewPassword());
 			pstmt.setString(2, dto.getUserid());
-			pstmt.setString(3, dto.getPassword());
+			pstmt.setString(3, dto.getCurrentPassword());
 			int result = pstmt.executeUpdate();
 			
 			if(result>0) updateFlag = true;
