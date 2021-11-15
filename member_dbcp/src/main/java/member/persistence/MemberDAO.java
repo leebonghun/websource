@@ -1,6 +1,5 @@
 package member.persistence;
 
-import java.security.interfaces.RSAKey;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -115,6 +114,29 @@ public class MemberDAO {
 		
 		
 		return insertFlag;
+	}
+	public boolean dupid(String userid) {
+		boolean dupflag = true;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "select * from member where userid=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			
+			rs=pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dupflag = false;
+			}
+			System.out.println(dupflag);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(rs);
+			close(pstmt);
+		}
+		return dupflag;
 	}
 	
 }
