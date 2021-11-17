@@ -1,3 +1,5 @@
+<%@page import="board.domain.boardDTO"%>
+<%@page import="java.net.URLEncoder"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@include file="../include/header.jsp"%>
@@ -8,7 +10,7 @@
 			<h3 class="box-title">Read Board</h3>
 		</div>
 		<div style="height:20px"></div>
-		<form action="" method="post" role="form">
+		<form action="" method="post">
 		
 			<div class="box-body">
 				<div class="form-group row">
@@ -34,7 +36,18 @@
 				<div class="form-group  row">
 					<label for="filename" class="col-sm-2 col-form-label">파일첨부</label>
 					<div class="col-sm-10">
-					${dto.attach}
+					<%
+					boardDTO dto =(boardDTO)request.getAttribute("dto");
+					String attachFullName = dto.getAttach();
+							
+					if(attachFullName!=null){
+					String attachName =	URLEncoder.encode(attachFullName,"utf-8");
+					out.print("<a href='/view/download.jsp?fileName="+attachName+"'>");
+					out.print(attachFullName);
+					out.print("</a>");
+					}
+					%>
+				
 					</div>
 				</div>
 
@@ -53,5 +66,8 @@
 	</div>
 		
 </section>
+<form action="" method="post" role="form">
+	<input type="hidden" name="bno" value='${dto.bno}'/>
+</form>
 <script src="/js/view.js"></script>
 <%@include file="../include/footer.jsp"%>

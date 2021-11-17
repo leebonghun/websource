@@ -22,6 +22,19 @@ insert into board(bno,title,content,password,attach,name,re_ref,re_lev,re_sequen
 values(board_seq.nextval,'게시판 작성','게시판을 작성해 봅시다','12345',null,'홍길동',board_seq.currval
 ,0,0);
 
-select* from board;
+select * from board;
 
+update board set title=4 , content=4 where bno=4 and password=4 ;
+
+
+
+--(1) : 1030 두번째 댓글(가장 최신 댓글이 위로 올라와야 한다)
+update board set re_sequence = re_sequence+1 where re_ref = 1030 and re_sequence >0;
+
+--(2)
+insert into board(bno,title,content,password,attach,name,re_ref,re_lev,re_sequence)
+values(board_seq.nextval,'Re : 댓글작성2','게시판을 작성해봅시다','12345',null,'김지선',1030,1,1);
+
+--(3) 시퀀스의 오름차순 최신 댓글이 위로 올라오게 order by
+select bno,title,re_ref,re_sequence,re_lev from board where re_ref = 1030 order by re_sequence;
 

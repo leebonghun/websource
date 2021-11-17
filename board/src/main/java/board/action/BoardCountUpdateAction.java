@@ -14,7 +14,8 @@ public class BoardCountUpdateAction implements BoardAction {
 		BoardCountUpdateService updateService = new BoardCountUpdateService();
 		updateService.update(bno);
 		
-		path += "?bno="+bno;
+		path += "?bno="+bno; //bno값을 다시 받아줌
+		
 		return new BoardActionForward(path, true) ;
 	}
 
