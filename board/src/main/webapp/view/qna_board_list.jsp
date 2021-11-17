@@ -28,9 +28,10 @@
 			<tr><!-- 리스트 목록 보여주기 -->
 				<td class='text-center'>${dto.bno}</td><!--번호-->
 				<td>
+				<!--re_lev가 0이 아니면 증가한 수 *1 앞으로 띄워쓰기해줌  -->
 					<c:if test="${dto.re_lev!=0}">
 						<c:forEach begin="0" end="${dto.re_lev*1}">
-							&nbsp;						
+							&nbsp;<!-- 띄워쓰기 -->						
 						</c:forEach>
 					</c:if>
 					<a href="/countUpdate.do?bno=${dto.bno}">${dto.title}</a>

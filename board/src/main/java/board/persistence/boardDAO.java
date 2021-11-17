@@ -50,6 +50,7 @@ public class boardDAO {
 		try {
 			//댓글과 게시글 위치 변경
 			String sql = "select bno,title,name,regdate,readcount,re_lev from board order by re_ref desc,re_sequence asc";
+																//re_lev : 댓글 부분 띄워주기위해
 			pstmt =con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			

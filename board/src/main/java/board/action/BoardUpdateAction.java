@@ -31,7 +31,7 @@ public class BoardUpdateAction implements BoardAction {
 		BoardUpdateService service = new BoardUpdateService();
 		boolean updateFlag1 = service.update1(dto);
 		if(updateFlag1) {
-			path += "?bno="+dto.getBno();
+			path += "?bno="+dto.getBno(); //여기는dto를 받았기 때문에 bno 를 getBno()를써서 값을 받아옴
 		}else {
 			path = "/modify.do?bno="+dto.getBno();
 		}

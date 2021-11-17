@@ -24,7 +24,8 @@ public class BoardReplyAction implements BoardAction {
 		boolean replyFlag = service.reply(dto);
 		
 		if(!replyFlag) {
-			path = "/read.do?bno="+request.getParameter("bno");
+			path = "/read.do?bno="+request.getParameter("bno"); //여기서는 bno값을 선언을 안해줬기 때문에 가지고있는 값을 가져와야한다따라서 request.getParameter를
+																//이용해 bno값을 불러온다.
 		}
 		
 		return new BoardActionForward(path,true);
