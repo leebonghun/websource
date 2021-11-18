@@ -34,7 +34,9 @@ public class BoardActionFactory {
 			//답변 버튼 클릭 -> 스크립트 실행 
 		}else if(cmd.equals("/reply.do")) {
 			action = new BoardReplyAction("/list.do	");
-		}
+		}/*else if(cmd.equals("/search.do")) {
+			action = new BoardListAction("/view/qna_board_list.jsp");
+		}*/	
 		return action;
 	}
 }

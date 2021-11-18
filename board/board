@@ -23,6 +23,9 @@ values(board_seq.nextval,'게시판 작성','게시판을 작성해 봅시다','
 ,0,0);
 
 select * from board;
+insert into board(bno,name,password,title,content,re_ref,re_lev,re_sequence)
+(select board_seq.nextval,name,password,title,content,board_seq.currval,re_lev,re_sequence
+from board);
 
 update board set title=4 , content=4 where bno=4 and password=4 ;
 
@@ -37,4 +40,66 @@ values(board_seq.nextval,'Re : 댓글작성2','게시판을 작성해봅시다',
 
 --(3) 시퀀스의 오름차순 최신 댓글이 위로 올라오게 order by
 select bno,title,re_ref,re_sequence,re_lev from board where re_ref = 1030 order by re_sequence;
+
+-- 페이지 나누기
+-- rownum : 가상칼럼(임시값) - 조회된 결과에 번호를 매기는 것 (1)
+select rownum, bno,title from board order by bno desc;
+
+--rownum 제한의 형태로 쓸때 형식 (2)
+select rownum, bno,title from board where rownum <= 10;
+
+-- (1) + (2) 
+select rownum, bno,title from board where rownum <= 10 order by bno desc;
+
+--rownum 과 order by 쓸때 주의점
+--정렬을 한 후
+select rownum, bno,title from board where rownum <= 10 order by re_ref desc, re_sequence asc;
+
+
+--인라인 쿼리 작성
+select rownum,bno,title
+from
+	(select bno,title from board where bno>0 order by re_ref desc, re_sequence asc)
+where rownum <=10;
+
+--1 click => 최신글 10개 가지고 오기
+--2 click => 그 다음 최신글 10개 가지고 오기
+--1~10페이지
+select rnum,bno,title
+from	
+	(select rownum rnum,A.*
+	from
+		(select bno,title from board where bno>0 order by re_ref desc, re_sequence asc) A
+	where rownum <=10)
+where rnum >0;
+--11~20페이지
+
+select rnum,bno,title
+from	
+	(select rownum rnum,A.*
+	from
+		(select bno,title from board where bno>0 order by re_ref desc, re_sequence asc) A
+	where rownum <=20)
+where rnum >10;
+-- 21~30페이지
+select rnum,bno,title
+from	
+	(select rownum rnum,A.*
+	from
+		(select bno,title from board where bno>0 and title like '%게시판%'order by re_ref desc, re_sequence asc) A
+	where rownum <=30)
+where rnum >20;
+
+--
+--1(10,0) : 1페이지 * 10 ,(1-1)*10
+--2(20,10) : 2*10 , (2-1)*10
+--3(30,20) : 3*10 , (3-1) * 10
+
+insert into board(bno,name,password,title,content,re_ref,re_lev,re_sequence)
+(select board_seq.nextval,name,password,title,content,board_seq.currval,re_lev,re_sequence
+from board);
+--
+select count(*) from board;
+
+delete from board;
 

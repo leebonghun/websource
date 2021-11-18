@@ -1,5 +1,6 @@
 package board.persistence;
 
+import java.lang.module.ModuleDescriptor.Builder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static board.persistence.jdbcUtil.*;
+
+import board.domain.PageDTO;
+import board.domain.SearchDTO;
 import board.domain.boardDTO;
 
 public class boardDAO {
@@ -42,16 +46,81 @@ public class boardDAO {
 		}
 		return insertFlag;
 	}
-	public List<boardDTO> list(){
+	
+	//전체 목록 : page 나누기 전
+//	public List<boardDTO> list(){
+//		List<boardDTO> list = new ArrayList<boardDTO>();
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		
+//		try {
+//			//댓글과 게시글 위치 변경
+//			String sql = "select bno,title,name,regdate,readcount,re_lev from board order by re_ref desc,re_sequence asc";
+//																//re_lev : 댓글 부분 띄워주기위해
+//			pstmt =con.prepareStatement(sql);
+//			rs=pstmt.executeQuery();
+//			
+//			while(rs.next()) {
+//			boardDTO dto = new boardDTO();
+//			dto.setBno(rs.getInt("bno"));
+//			dto.setTitle(rs.getString("title"));
+//			dto.setName(rs.getString("name"));
+//			dto.setRegdate(rs.getDate("regdate"));
+//			dto.setReadcount(rs.getInt("readcount"));
+//			dto.setRe_lev(rs.getInt("re_lev"));
+//			
+//			list.add(dto);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}finally {
+//			close(rs);
+//			close(pstmt);
+//		}
+//		return list;
+//	}
+	
+	//페이지 나누기 개념 + searchList 개념
+	public List<boardDTO> list(PageDTO pageDtO){
 		List<boardDTO> list = new ArrayList<boardDTO>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		try {
+			StringBuilder bulider = new StringBuilder();
+			//공통 부분
+			bulider.append("select bno,title,name,regdate,readcount,re_lev ");
+			bulider.append("from (select rownum rnum,A.* ");
+			bulider.append("from ");
+			bulider.append("(select bno,title,name,regdate,readcount,re_lev from board ");
+			bulider.append("where bno>0 ");
+			
+			int start = pageDtO.getPage()*pageDtO.getAmount();
+			int end = (pageDtO.getPage()-1)*pageDtO.getAmount();
+			
+			if(!pageDtO.getSearchDto().getCriteria().isEmpty()) {
+				bulider.append("and "+pageDtO.getSearchDto().getCriteria()+" like ? ");
+				bulider.append("order by re_ref desc, re_sequence asc) A ");
+				bulider.append("where rownum <= ?) ");
+				bulider.append("where rnum > ?");
+				
+				pstmt =con.prepareStatement(bulider.toString());
+				pstmt.setString(1, "%"+pageDtO.getSearchDto().getKeyword()+"%");
+				pstmt.setInt(2, start);
+				pstmt.setInt(3, end);
+			}else {
+				bulider.append("order by re_ref desc, re_sequence asc) A ");
+				bulider.append("where rownum <= ?) ");
+				bulider.append("where rnum > ?");
+				
+				pstmt =con.prepareStatement(bulider.toString());
+				pstmt.setInt(1, start);
+				pstmt.setInt(2, end);
+			}
+			
+		
 			//댓글과 게시글 위치 변경
-			String sql = "select bno,title,name,regdate,readcount,re_lev from board order by re_ref desc,re_sequence asc";
-																//re_lev : 댓글 부분 띄워주기위해
-			pstmt =con.prepareStatement(sql);
+		    //re_lev : 댓글 부분 띄워주기위해
 			rs=pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -72,6 +141,41 @@ public class boardDAO {
 			close(pstmt);
 		}
 		return list;
+	}
+	
+	//전체 게시물 수
+	public int totalRows(SearchDTO searchDto) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int total = 0;
+		try {
+			String sql = "";
+			
+			if(!searchDto.getCriteria().isEmpty()) {
+				sql = "select count(*) from board where "+searchDto.getCriteria()+" like ?";
+				pstmt= con.prepareStatement(sql);
+				pstmt.setString(1, "%"+searchDto.getKeyword()+"%");
+			}else {
+				 sql = "select count(*) from board ";
+				 pstmt= con.prepareStatement(sql);
+				
+				
+			}
+			
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				total = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return total;//게시물개수가담김
 	}
 	public boardDTO read(int bno) {
 		boardDTO dto = null;
@@ -238,4 +342,38 @@ public class boardDAO {
 		return insertFlag;
 		
 	}
+	public List<boardDTO> searchList(SearchDTO searchDTO){
+		List<boardDTO> list = new ArrayList<boardDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select bno,title,name,regdate,readcount,re_lev from board where "+searchDTO.getCriteria()+" like ? order by re_ref desc,re_sequence asc";
+//		             "select bno,title,name,regdate,readcount,re_lev from board order by re_ref desc,re_sequence asc";
+		
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, "%"+searchDTO.getKeyword()+"%");
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				boardDTO dto = new boardDTO();
+				dto.setBno(rs.getInt("bno"));
+				dto.setTitle(rs.getString("title"));
+				dto.setName(rs.getString("name"));
+				dto.setRegdate(rs.getDate("regdate"));
+				dto.setReadcount(rs.getInt("readcount"));
+				dto.setRe_lev(rs.getInt("re_lev"));
+				
+				list.add(dto);
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			close(rs);
+			close(pstmt);
+		}
+		return list;
+	}
+	
 }
